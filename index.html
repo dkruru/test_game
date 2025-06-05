@@ -12,6 +12,7 @@
 <h1>Brick Breaker</h1>
 <p>Use A and D to move the paddle. Press Space to launch or reset the ball.</p>
 <canvas id="game" width="480" height="320"></canvas>
+<script src="levels.js"></script>
 <script>
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -39,18 +40,6 @@ function playSound(freq) {
   gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.1);
   osc.stop(audioCtx.currentTime + 0.1);
 }
-const levels = [
-  {rows: 2, cols: 5},
-  {rows: 3, cols: 5},
-  {rows: 3, cols: 6},
-  {rows: 4, cols: 6},
-  {rows: 4, cols: 7},
-  {rows: 5, cols: 7},
-  {rows: 5, cols: 8},
-  {rows: 6, cols: 8},
-  {rows: 6, cols: 9},
-  {rows: 7, cols: 10}
-];
 let bricks = [];
 let brickWidth;
 let brickHeight = 20;
