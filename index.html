@@ -52,6 +52,12 @@ function playSound(freq) {
   gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.1);
   osc.stop(audioCtx.currentTime + 0.1);
 }
+
+function applyRandomBounce(ball, axis){
+  if(!randomBounce) return;
+  if(axis === 'vertical') ball.dx = (Math.random()*4-2);
+  else if(axis === 'horizontal') ball.dy = (Math.random()*4-2);
+}
 let bricks = [];
 let brickWidth;
 let brickHeight = 20;
@@ -100,7 +106,10 @@ function collisionDetection(ball) {
       let b = bricks[c][r];
       if(b.status == 1) {
         if(ball.x > b.x && ball.x < b.x+brickWidth && ball.y > b.y && ball.y < b.y+brickHeight) {
-          if(!piercing) ball.dy = -ball.dy;
+          if(!piercing){
+            ball.dy = -ball.dy;
+            applyRandomBounce(ball,'vertical');
+          }
           b.status = 0;
           score += 10;
           playSound(600);
@@ -155,18 +164,20 @@ function updateBall(ball, isMain){
   collisionDetection(ball);
   if(ball.x + ball.dx > canvas.width-ballRadius || ball.x + ball.dx < ballRadius) {
     ball.dx = -ball.dx;
+    applyRandomBounce(ball,'horizontal');
   }
   if(ball.y + ball.dy < ballRadius) {
     ball.dy = -ball.dy;
+    applyRandomBounce(ball,'vertical');
   } else if(ball.y + ball.dy > canvas.height-ballRadius) {
     if(ball.x > paddleX && ball.x < paddleX + paddleWidth) {
       ball.dy = -ball.dy;
-      if(randomBounce) ball.dx = (Math.random()*4-2);
+      applyRandomBounce(ball,'vertical');
       if(stickyPaddle){ ballHeld = true; stickyPaddle=false; }
       playSound(300);
     } else {
       if(isMain){
-        if(bottomShield>0){ bottomShield--; ball.dy = -ball.dy; }
+        if(bottomShield>0){ bottomShield--; ball.dy = -ball.dy; applyRandomBounce(ball,'vertical'); }
         else {
           lives--;
           if(!lives){
