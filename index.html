@@ -27,6 +27,17 @@ let dx = 2;
 let dy = -2;
 let level = 0;
 let lives = 3;
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playSound(freq) {
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.frequency.value = freq;
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.1);
+  osc.stop(audioCtx.currentTime + 0.1);
+}
 const levels = [
   {rows: 2, cols: 5},
   {rows: 3, cols: 5},
@@ -89,6 +100,7 @@ function collisionDetection() {
         if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
           dy = -dy;
           b.status = 0;
+          playSound(600);
           if(checkWin()) nextLevel();
         }
       }
@@ -181,6 +193,7 @@ function draw() {
   } else if(y + dy > canvas.height-ballRadius) {
     if(x > paddleX && x < paddleX + paddleWidth) {
       dy = -dy;
+      playSound(300);
     }
     else {
       lives--;
